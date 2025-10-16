@@ -1,0 +1,401 @@
+/* --- "SEASCAPE" Final Branded Theme V3 --- */
+/* A rich, dark theme with levitating white calendar cards and a blended logo. */
+
+/* --- 1. Root Variables & Body (New Palette) --- */
+:root {
+  --background-color: #147f95;   
+  --card-background: #ffffff;    
+  --accent-primary: #FFD275;     
+  --accent-primary-darker: #f9c35b;
+  --accent-primary-focus: rgba(255, 210, 117, 0.25);
+  --accent-secondary: #e85d04;
+  --text-light: #f0f0f0;         
+  --text-dark: #343a40;          
+  --text-secondary: #a2d2e2;   
+  --border-color: #1f9cb5;        
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-header: 'Libre Baskerville', serif;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--background-color);
+  color: var(--text-light); 
+  margin: 0;
+  padding-top: 80px; 
+  padding-left: 15px;
+}
+
+/* --- Logo Styling (Sticky and Blended) --- */
+.logo-container {
+    position: sticky;
+    top: 20px;
+    left: 15px; 
+    z-index: 1001;
+    display: block; 
+    width: fit-content;
+    margin-bottom: -60px;
+}
+
+.app-logo {
+    height: 40px;
+    width: auto;
+    mix-blend-mode: screen; 
+}
+
+/* --- 2. Typography Hierarchy --- */
+h2 {
+  font-family: var(--font-header);
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-dark); 
+  margin-bottom: 20px;
+}
+
+/* --- 3. The Sticky Filter Bar (with DEPTH) --- */
+.filter-bar {
+  position: sticky;
+  top: 0;
+  padding: 15px 25px;
+  z-index: 1000;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--border-color);
+  
+  background-color: rgba(20, 127, 149, 0.85); 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 15px 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group label, .filter-group legend {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.filter-group legend {
+  display: none;
+}
+
+input[type="number"], select, input[type="date"] {
+  font-family: var(--font-main);
+  font-size: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  color: var(--text-light);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+input[type="number"]:focus, select:focus, input[type="date"]:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-primary-focus);
+}
+
+/* --- 4. Fraction Selector Redesign --- */
+.fraction-selector {
+  min-width: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.fraction-selector .fraction-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.fraction-selector .fraction-item {
+  display: flex;
+  align-items: center;
+}
+.fraction-selector input[type="checkbox"] {
+  display: none;
+}
+.fraction-selector .fraction-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 22px;
+  border: 1px solid var(--border-color);
+  /* KEY CHANGE: Make the default state white and "off" */
+  background-color: var(--card-background);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 16px;
+  color: var(--text-dark); /* Dark text for the white background */
+  opacity: 0.7; /* Make it feel "turned off" */
+}
+.fraction-selector .fraction-label:hover {
+    opacity: 1;
+}
+.fraction-selector input[type="checkbox"]:checked + .fraction-label {
+  background-color: var(--accent-primary);
+  color: #3d2f0a;
+  border-color: var(--accent-primary);
+  opacity: 1; /* Make it fully visible when "on" */
+}
+.fraction-selector .fraction-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* --- 5. Action Buttons --- */
+.form-actions {
+  margin-left: auto;
+}
+.form-button {
+  font-family: var(--font-main);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.2s;
+}
+.form-button:active {
+  transform: scale(0.97);
+}
+.form-button[type="submit"] {
+  background-color: var(--accent-primary);
+  color: #3d2f0a;
+}
+.form-button[type="submit"]:hover {
+  background-color: var(--accent-primary-darker);
+}
+.form-button[type="button"] {
+  background-color: var(--border-color);
+  color: var(--text-light);
+}
+.form-button[type="button"]:hover {
+  background-color: #2ab0ce;
+}
+
+/* --- 6. Main Calendar Layout --- */
+.calendar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 25px 50px 25px;
+  position: relative; 
+  transition: opacity 0.3s ease-in-out;
+}
+.calendar-container.loading .calendar {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px 30px;
+  transition: opacity 0.3s;
+}
+
+@keyframes fadeIn-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.month {
+  background: var(--card-background);
+  color: var(--text-dark); 
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #dee2e6; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  animation: fadeIn-up 0.5s ease-out forwards;
+  opacity: 0;
+}
+/* Stagger the animation for each month */
+.month:nth-child(2) { animation-delay: 0.05s; }
+.month:nth-child(3) { animation-delay: 0.1s; }
+.month:nth-child(4) { animation-delay: 0.15s; }
+.month:nth-child(5) { animation-delay: 0.2s; }
+
+/* --- 7. Calendar Table Styling --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead th {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #6c757d; 
+  padding-bottom: 15px;
+}
+td {
+  text-align: center;
+  padding: 1px;
+  height: 42px;
+}
+td.empty {
+  pointer-events: none;
+}
+.date-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin: 0 auto;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+td:not(.empty) .date-circle:hover {
+  transform: scale(1.15);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+.date-cell {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+.date-cell.holiday-mx {
+  border: 2px solid var(--background-color); 
+  border-radius: 6px;
+}
+.date-cell.holiday-us {
+  border: 2px solid var(--accent-secondary);
+  border-radius: 50%;
+}
+
+.date-circle.is-today {
+    background-color: var(--accent-primary) !important;
+    color: var(--text-dark) !important;
+    font-weight: 700;
+    box-shadow: 0 0 0 3px var(--accent-primary-focus);
+}
+
+.calendar.dimmed .month {
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+.calendar.dimmed .month .date-circle:not(.highlight) {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+.date-circle.highlight {
+    opacity: 1 !important;
+    transform: scale(1.1) !important;
+}
+
+/* --- 8. Other Elements --- */
+.tooltip {
+  position: fixed;
+  background: var(--text-dark);
+  color: var(--card-background);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.floating-error {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffb4a2;
+  color: #6d2e1c;
+  padding: 12px 20px;
+  border: 1px solid #f99f89;
+  border-radius: 8px;
+  font-weight: 500;
+  z-index: 2000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.loading-spinner-wrapper {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2000;
+    display: none;
+}
+.loading-spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid var(--accent-primary);
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.no-results {
+    text-align: center;
+    padding: 100px 20px;
+    color: var(--text-light);
+}
+.no-results h2 {
+    color: var(--text-light);
+}
+
+.hunter-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.fraction-hunter-footer {
+  text-align: center;
+  padding: 20px 0;
+  color: var(--text-secondary);
+}
+.fraction-hunter-footer p {
+  margin-top: 0;
+  font-family: var(--font-main);
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.month.ghost {
+    display: block;
+    background: none;
+    border: none;
+    box-shadow: none;
+    grid-column: 1 / -1;
+    animation: none;
+    opacity: 1;
+}

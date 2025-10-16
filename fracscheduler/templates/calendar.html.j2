@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractional Calendar</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Inter&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+</head>
+<body>
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='seascape_logo.png') }}" alt="SEASCAPE Logo" class="app-logo">
+    </div>
+
+    {% if error_message %}
+      <div
+        id="floating-error"
+        class="floating-error"
+        data-message="{{ error_message }}"
+      ></div>
+    {% endif %}
+
+    <div id="filter-bar" class="filter-bar">
+      <form method="get" action="/" class="filter-form">
+        <div class="filter-group">
+          <label for="year">Year:</label>
+          <input type="number" id="year" name="year" value="{{ year }}" />
+        </div>
+        <div class="filter-group">
+          <label for="apartament">Apartment:</label>
+          <select id="apartament" name="apartament">
+            {% for a in available_apartaments %}
+            <option value="{{ a }}" {% if apartament == a %}selected{% endif %}>{{ a }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <fieldset class="filter-group fraction-selector">
+          <div class="fraction-container">
+            {% for i in [1,2,3,4,5,6,7,0] %}
+            <div class="fraction-item">
+              <input type="checkbox" id="fraction_{{ i }}" name="fractions" value="{{ i }}" {% if i in selected_fractions %}checked{% endif %} />
+              <label for="fraction_{{ i }}" class="fraction-label" data-fraction-value="{{ i }}">
+                <span class="fraction-color" style="background-color: {{ fraction_colors[i] }};"></span>
+                {{ 8 if i == 0 else i }}
+              </label>
+            </div>
+            {% endfor %}
+            <div class="fraction-item">
+              <input type="checkbox" id="fraction_unfractional" name="fractions" value="unfractional" {% if 'unfractional' in selected_fractions %}checked{% endif %} />
+              <label for="fraction_unfractional" class="fraction-label" data-fraction-value="unfractional"> Unfractioned </label>
+            </div>
+            <div class="fraction-item">
+              <input type="checkbox" id="fraction_all" name="fractions" value="all" {% if 'all' in selected_fractions %}checked{% endif %} />
+              <label for="fraction_all" class="fraction-label" data-fraction-value="all">All</label>
+            </div>
+          </div>
+        </fieldset>
+        <div class="filter-group form-actions">
+            <button type="button" class="form-button" onclick="deselectAll()">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="calendar-container">
+        <div class="loading-spinner-wrapper" id="loading-spinner">
+            <div class="loading-spinner"></div>
+        </div>
+        <div class="calendar">
+            {% macro render_day(day, month_num, month_year) %}
+                <td class="{{ 'empty' if day == 0 else '' }}">
+                    {% if day != 0 %}
+                        {% set date = datetime(month_year, month_num, day) %}
+                        {% set frac_c = fractional_indices.get(date) %}
+                        {% set frac_p = fractional_indices_prev.get(date) %}
+                        {% set frac_n = fractional_indices_next.get(date) %}
+                        {% set fraction = frac_c or frac_p or frac_n %}
+                        {% set is_unf = (date in unfractional_dates) or (date in unfractional_dates_prev) or (date in unfractional_dates_next) %}
+                        {% set paint_fraction = fraction and (fraction[0] in selected_fractions or 'all' in selected_fractions) %}
+                        {% set holiday_info = golden_holidays.get(date) %}
+                        {% set holiday_class = '' %}
+                        {% if holiday_info %}{% set holiday_class = 'holiday-mx' if holiday_info.origin == 'MX' else 'holiday-us' %}{% endif %}
+                        {% set is_today = (date.date() == today) %}
+                        
+                        {% set details_fraction = 'Unfractioned' if is_unf else ('Fraction ' ~ (8 if fraction[0] == 0 else fraction[0])) if fraction else '' %}
+                        {% set details_holiday = holiday_info.name if holiday_info else '' %}
+
+                        <div class="date-cell {{ holiday_class }}">
+                            <div class="date-circle {{ 'is-today' if is_today }}"
+                                 style="
+                                 {% if 'unfractional' in selected_fractions and is_unf %}background-color: rgb(29, 29, 31); color: white;
+                                 {% elif paint_fraction %}background-color:{{ fraction_colors[fraction[0]] }}; color:{% if fraction[0] in [0,2,4,6] %}#fff{% else %}#000{% endif %};
+                                 {% endif %}"
+                                 data-tooltip="{{ details_fraction }}{% if holiday_info %} - {{ details_holiday }}{% endif %}">
+                              {{ day }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </td>
+            {% endmacro %}
+            {% if apt_type == 'regular' %}
+            <div class="month">
+                <h2>{{ calendar.month_name[12] }} {{ year - 1 }}</h2>
+                <table>
+                    <thead><tr>{% for d in day_names %}<th>{{ d }}</th>{% endfor %}</tr></thead>
+                    <tbody>
+                        {% for week in previous_december %}
+                        <tr>{% for day in week %}{{ render_day(day, 12, year - 1) }}{% endfor %}</tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+            {% for month_num, month_year, month_matrix in months_with_index %}
+            <div class="month">
+                <h2>{{ calendar.month_name[month_num] }} {{ month_year }}</h2>
+                <table>
+                    <thead><tr>{% for d in day_names %}<th>{{ d }}</th>{% endfor %}</tr></thead>
+                    <tbody>
+                        {% for week in month_matrix %}
+                        <tr>{% for day in week %}{{ render_day(day, month_num, month_year) }}{% endfor %}</tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+
+            <div class="month ghost">
+                <div class="fraction-hunter-footer">
+                    <p>Looking for a specific date? Try the Hunter:</p>
+                    <form method="get" action="/hunt_fraction" class="hunter-form">
+                        <input type="hidden" name="apartament" value="{{ apartament }}" />
+                        <input type="date" name="hunter_date" />
+                        <button type="submit" class="form-button">Hunt</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
