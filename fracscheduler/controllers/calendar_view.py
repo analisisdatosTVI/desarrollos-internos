@@ -1,5 +1,5 @@
 import calendar
-from datetime import datetime, date # Add 'date' here
+from datetime import datetime, date
 from flask import render_template, request
 
 from . import controllers
@@ -8,7 +8,6 @@ from models import (
     apartament_weekday_calendar_starts,
     apartament_type,
 )
-# This import path assumes you are using the new refactored utils
 from utils import (
     regular_fractional_index_maker,
     snow_fractional_index_maker,
@@ -17,7 +16,6 @@ from utils import (
     regular_fraction_hunter,
     snow_fraction_hunter,
 )
-# This import path may need to be adjusted based on your final structure
 from utils.hollydays import regular_hollydays_dic, snow_hollydays_dic
 
 # shared color palette
@@ -65,18 +63,18 @@ def choose_utils(apartment):
 @controllers.route('/')
 def index():
     year = request.args.get('year', 2026, type=int)
-    apartment = request.args.get('apartament', 204, type=int)
+    apartment = request.args.get('apartament', 205, type=int)
 
     maintenance_path = apartament_maintenance_path.get(apartment, 1)
     weekday_start = apartament_weekday_calendar_starts.get(apartment, 1)
     idx_maker, unfract_list, _ = choose_utils(apartment)
 
-    # all three years’ fractional indices
+    # all three years' fractional indices
     frac_curr = idx_maker(year, weekday_start, maintenance_path)
     frac_prev = idx_maker(year - 1, weekday_start, maintenance_path)
     frac_next = idx_maker(year + 1, weekday_start, maintenance_path)
 
-    # all three years’ unfractional dates
+    # all three years' unfractional dates
     unf_curr = unfract_list(year, weekday_start, maintenance_path)
     unf_prev = unfract_list(year - 1, weekday_start, maintenance_path)
     unf_next = unfract_list(year + 1, weekday_start, maintenance_path)
@@ -106,7 +104,7 @@ def index():
     return render_template(
         'calendar.html.j2',
         year=year,
-        today=date.today(), # NEW: Pass today's date to the template
+        today=date.today(),
         apt_type=apt_type,
         apartament=apartment,
         available_apartaments=sorted(apartament_maintenance_path.keys()),
@@ -124,7 +122,5 @@ def index():
         unfractional_dates_next=unf_next,
         selected_fractions=selected,
         golden_holidays=golden_holidays,
-        error_message=request.args.get('error_message') # For potential future use
+        error_message=request.args.get('error_message')
     )
-
-# The other controller functions (fraction_hunter, etc.) remain unchanged

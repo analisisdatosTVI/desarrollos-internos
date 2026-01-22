@@ -10,6 +10,72 @@ function debounce(func, delay = 500) {
   };
 }
 
+// Global variables for PDF modal
+let selectedFractionForPDF = null;
+
+function openPDFModal() {
+    const modal = document.getElementById('pdf-modal');
+    const apartmentSpan = document.getElementById('modal-apartment');
+    const fractionSpan = document.getElementById('modal-fraction');
+    
+    // Get current apartment value
+    const apartment = apartamentValue;
+    
+    // Get selected fraction
+    const checkedBoxes = document.querySelectorAll('input[name="fractions"]:checked');
+    if (checkedBoxes.length === 1) {
+        const fractionValue = checkedBoxes[0].value;
+        // Convert 0 to 8 for display
+        const displayFraction = fractionValue === '0' ? '8' : fractionValue;
+        
+        apartmentSpan.textContent = apartment;
+        fractionSpan.textContent = displayFraction;
+        selectedFractionForPDF = fractionValue;
+        
+        modal.style.display = 'block';
+    }
+}
+
+function closePDFModal() {
+    const modal = document.getElementById('pdf-modal');
+    modal.style.display = 'none';
+    selectedFractionForPDF = null;
+}
+
+function confirmPDF() {
+    if (selectedFractionForPDF !== null) {
+        // Build the URL for PDF preview page
+        const apartment = apartamentValue;
+        const url = `/preview_pdf?apartament=${apartment}&fraction=${selectedFractionForPDF}`;
+        
+        // Open in new window to preview
+        window.open(url, '_blank', 'width=1024,height=768');
+        
+        // Close modal
+        closePDFModal();
+    }
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('pdf-modal');
+    if (event.target === modal) {
+        closePDFModal();
+    }
+}
+
+function updatePrintButtonVisibility() {
+    const printBtn = document.getElementById('print-btn');
+    const checkedBoxes = document.querySelectorAll('input[name="fractions"]:checked:not(#fraction_all):not(#fraction_unfractional)');
+    
+    // Show button only if exactly one numeric fraction is selected
+    if (checkedBoxes.length === 1) {
+        printBtn.style.display = 'flex';
+    } else {
+        printBtn.style.display = 'none';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('.filter-form');
     const calendarContainer = document.querySelector('.calendar-container');
@@ -36,7 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     filterInputs.forEach(input => {
-      input.addEventListener('change', debouncedSubmit);
+      input.addEventListener('change', () => {
+        debouncedSubmit();
+        updatePrintButtonVisibility();
+      });
     });
 
     // --- NEW: LOGIC TO UNCHECK "ALL" ---
@@ -56,6 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+    
+    // Initial check for print button visibility
+    updatePrintButtonVisibility();
 });
 
 function deselectAll() {

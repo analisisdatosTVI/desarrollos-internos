@@ -164,6 +164,8 @@ input[type="number"]:focus, select:focus, input[type="date"]:focus {
 /* --- 5. Action Buttons --- */
 .form-actions {
   margin-left: auto;
+  display: flex;
+  gap: 10px;
 }
 .form-button {
   font-family: var(--font-main);
@@ -191,6 +193,21 @@ input[type="number"]:focus, select:focus, input[type="date"]:focus {
 }
 .form-button[type="button"]:hover {
   background-color: #2ab0ce;
+}
+
+/* Print button specific styling */
+.print-button {
+  background-color: var(--accent-secondary) !important;
+  color: white !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.print-button:hover {
+  background-color: #c74f03 !important;
+}
+.print-icon {
+  font-size: 18px;
 }
 
 /* --- 6. Main Calendar Layout --- */
@@ -308,7 +325,98 @@ td:not(.empty) .date-circle:hover {
     transform: scale(1.1) !important;
 }
 
-/* --- 8. Other Elements --- */
+/* --- 8. Modal Styling --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: var(--card-background);
+    margin: 15% auto;
+    padding: 30px;
+    border: 1px solid #dee2e6;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content h3 {
+    font-family: var(--font-header);
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 22px;
+    text-align: center;
+}
+
+.modal-content p {
+    color: var(--text-dark);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.modal-details {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.modal-note {
+    font-size: 14px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.modal-btn-confirm {
+    background-color: var(--accent-secondary) !important;
+    color: white !important;
+}
+
+.modal-btn-confirm:hover {
+    background-color: #c74f03 !important;
+}
+
+.modal-btn-cancel {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.modal-btn-cancel:hover {
+    background-color: #5a6268 !important;
+}
+
+/* --- 9. Other Elements --- */
 .tooltip {
   position: fixed;
   background: var(--text-dark);

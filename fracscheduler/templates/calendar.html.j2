@@ -26,6 +26,23 @@
       ></div>
     {% endif %}
 
+    <!-- PDF Confirmation Modal -->
+    <div id="pdf-modal" class="modal">
+        <div class="modal-content">
+            <h3>Generar Certificado PDF</h3>
+            <p>¿Desea generar el certificado oficial de semanas asignadas para:</p>
+            <p class="modal-details">
+                <strong>Apartamento:</strong> <span id="modal-apartment"></span><br>
+                <strong>Fracción:</strong> <span id="modal-fraction"></span>
+            </p>
+            <p class="modal-note">El documento se abrirá en una nueva ventana donde podrá visualizarlo e imprimirlo directamente.</p>
+            <div class="modal-buttons">
+                <button class="form-button modal-btn-confirm" onclick="confirmPDF()">Sí, generar</button>
+                <button class="form-button modal-btn-cancel" onclick="closePDFModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="filter-bar" class="filter-bar">
       <form method="get" action="/" class="filter-form">
         <div class="filter-group">
@@ -62,6 +79,9 @@
           </div>
         </fieldset>
         <div class="filter-group form-actions">
+            <button type="button" id="print-btn" class="form-button print-button" onclick="openPDFModal()" style="display: none;">
+                <span class="print-icon">📄</span> Print
+            </button>
             <button type="button" class="form-button" onclick="deselectAll()">Clear</button>
         </div>
       </form>
@@ -143,6 +163,10 @@
         </div>
     </div>
     
+    <script>
+        // Pass data to JavaScript
+        const apartamentValue = {{ apartament }};
+    </script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>
